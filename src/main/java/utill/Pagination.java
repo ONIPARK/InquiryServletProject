@@ -1,84 +1,60 @@
-package main.java.utill;
+package main.java.util; 
 
 public class Pagination {
-	private int pageSize = 10; // 한 페이지에 보여질 글 수 
-	private int rangeSize = 10; // 한 번에 보여질 페이지 번호 개수
-	
-	private int curPage; // 현재 페이지
-	private int curRange; // 현재 블럭
-	
-	private int listCnt; // 전체 게시글 수
-	private int pageCnt; // 전체 페이지 수
-	private int rangeCnt; // 전체 블럭 수
-	
-	private int startPage; // 현재 블럭 시작 페이지 번호
-	private int endPage; // 현재 블럭 끝 페이지 번호
-	
-	private int startIndex; // DB 조회 시작 인덱스 (OFFSET)
-	private int prevPage; // 이전 블럭의 시작 페이지
-	private int nextPage; // 다음 블럭의 시작 페이지
-	
-	public Pagination(int listCnt, int curPage) {
-		this.listCnt = listCnt;
-		this.curPage = curPage;
-		
-		// 전체 페이지 수
-		this.pageCnt = (int) Math.ceil((double) listCnt / pageSize);
-		
-		// 현재 블럭
-		this.curRange = (int) Math.floor((double) ((curPage - 1) / rangeSize) + 1);
-		
-		// 전체 블럭 수
-		this.rangeCnt = (int) Math.ceil((double) pageCnt / rangeSize);
-		
-		// 현재 블럭의 시작 페이지, 끝 페이지
-		this.startPage = ((curRange - 1) * rangeSize) + 1;
-		this.endPage = curRange * rangeSize;
-		
-		// endPage가 pageCnt보다 크면 보정
-		if (endPage > pageCnt) {
-			this.endPage = pageCnt;
-		}
-		
-		// DB에서 조회할 때 사용할 시작 인덱스
-		this.startIndex = (curPage - 1) * pageSize;
-		
-		// 이전, 다음 페이지
-		this.prevPage = curRange > 1 ? curRange - 1 * rangeSize : 1;
-		this.nextPage = curRange < rangeCnt ? curRange * rangeSize + 1 : pageCnt;
-	}
-	
-	// --- Getter들만 필요에 따라 추가 ---
-    public int getStartIndex() {
-        return startIndex;
+    private int pageSize = 10;   // 1ページに表示する件数
+    private int rangeSize = 10;  // 一度に表示するページ番号の数（ページングブロックのサイズ）
+
+    private int curPage;   // 現在ページ
+    private int curRange;  // 現在のブロック（1..rangeCnt）
+
+    private int listCnt;   // 総件数
+    private int pageCnt;   // 総ページ数
+    private int rangeCnt;  // 総ブロック数
+
+    private int startPage; // 現在ブロックの開始ページ番号
+    private int endPage;   // 現在ブロックの終了ページ番号
+
+    private int startIndex; // DB 取得開始インデックス（OFFSET）
+    private int prevPage;   // 以前ブロックの開始ページ
+    private int nextPage;   // 次ブロックの開始ページ
+
+    public Pagination(int listCnt, int curPage) {
+        this.listCnt = listCnt;
+        this.curPage = curPage;
+
+        // 総ページ数
+        this.pageCnt = (int) Math.ceil((double) listCnt / pageSize);
+
+        // 現在のブロック（1始まり）
+        this.curRange = (int) Math.floor((double) ((curPage - 1) / rangeSize) + 1);
+
+        // 総ブロック
+        this.rangeCnt = (int) Math.ceil((double) pageCnt / rangeSize);
+
+        // 現在ブロックの開始・終了ページ
+        this.startPage = ((curRange - 1) * rangeSize) + 1;
+        this.endPage = curRange * rangeSize;
+
+        // endPage が pageCnt を超える場合、補正
+        if (endPage > pageCnt) {
+            this.endPage = pageCnt;
+        }
+
+        // DB 取得の開始 index（OFFSET）
+        this.startIndex = (curPage - 1) * pageSize;
+
+        // 前/次ブロックの開始ページ
+        this.prevPage = curRange > 1 ? curRange - 1 * rangeSize : 1;
+        this.nextPage = curRange < rangeCnt ? curRange * rangeSize + 1 : pageCnt;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public int getStartPage() {
-        return startPage;
-    }
-
-    public int getEndPage() {
-        return endPage;
-    }
-
-    public int getCurPage() {
-        return curPage;
-    }
-
-    public int getPrevPage() {
-        return prevPage;
-    }
-
-    public int getNextPage() {
-        return nextPage;
-    }
-
-    public int getPageCnt() {
-        return pageCnt;
-    }
-	
+    // --- Getter ---
+    public int getStartIndex() { return startIndex; }
+    public int getPageSize() { return pageSize; }
+    public int getStartPage() { return startPage; }
+    public int getEndPage() { return endPage; }
+    public int getCurPage() { return curPage; }
+    public int getPrevPage() { return prevPage; }
+    public int getNextPage() { return nextPage; }
+    public int getPageCnt() { return pageCnt; }
 }
